@@ -52,13 +52,12 @@ if __name__ == "__main__":
 		add_help=True)
 	parser.add_argument('-db', metavar = 'blastdb_in', help='blastdb input')
 	parser.add_argument('-out', metavar = 'blastdb_out', help='blastdb output prefix')
-	parser.add_argument('-seq', metavar = 'seq_type', default="n", help='blastdb type ("p" or "n", default: "n")')
 	parser.add_argument('-taxids', metavar = 'taxids' , default=[], type = int, nargs='+', help='TaxIDs for which BLASTdbs should be generated') 
 	parser.add_argument('-merge', action='store_true' , help='Set flag for merging ') 
 
 	args = parser.parse_args()
 
-	blastdb_in, seq_type, taxids, merge_flag, out_prefix = args.db, args.st, args.taxids, args.merge, args.out
+	blastdb_in, taxids, merge_flag, out_prefix = args.db, args.taxids, args.merge, args.out
 
 	gi_taxid_nucl_dmp = db('$BLASTDB/gi_taxid_nucl.dmp', 'n') 
 	gi_taxid_prot_dmp = db('$BLASTDB/gi_taxid_prot.dmp', 'p')
