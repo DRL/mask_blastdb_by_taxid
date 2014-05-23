@@ -42,15 +42,14 @@ class blastdb(object):
 			return False
 
 	def get_gi_taxid_dmp_path(self):
-		gi_taxid_dmp_paths={'nucl' : os.path.abspath(os.path.dirname(self.filename)) + '/gi_taxid_nucl.dmp', 'prot' : os.path.abspath(os.path.dirname(self.filename)) + '/gi_taxid_prot.dmp'}
+		gi_taxid_dmp_paths={'nucl' : os.path.dirname(self.filename) + '/gi_taxid_nucl.dmp', 'prot' : os.path.dirname(self.filename) + '/gi_taxid_prot.dmp'}
 		try:
 			if os.path.isfile(gi_taxid_dmp_paths[self.type]):
 				return gi_taxid_dmp_paths[self.type]
 			else:
 				print gi_taxid_dmp_paths[self.type] + " was not found" 
 		except:
-			return False
-
+			print gi_taxid_dmp_paths[self.type] + " was not found" 
 
 if __name__ == "__main__":
 
@@ -69,7 +68,8 @@ if __name__ == "__main__":
 
 	args = parser.parse_args()
 
-	blastdb_path, taxids, merge_flag, out_prefix = args.db, args.taxids, args.merge, args.out
+	blastdb_path, taxids, merge_flag, out_prefix = os.path.abspath(args.db), args.taxids, args.merge, args.out
 
 	db = blastdb(blastdb_path)
-	db.get_gi_taxid_dmp_path()
+	
+	#gi_taxid_dmp = db.get_gi_taxid_dmp_path()
