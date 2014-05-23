@@ -59,8 +59,8 @@ if __name__ == "__main__":
 
 	blastdb_in, taxids, merge_flag, out_prefix = args.db, args.taxids, args.merge, args.out
 
-	gi_taxid_nucl_dmp = db('$BLASTDB/gi_taxid_nucl.dmp', 'n') 
-	gi_taxid_prot_dmp = db('$BLASTDB/gi_taxid_prot.dmp', 'p')
+	#gi_taxid_nucl_dmp = db('$BLASTDB/gi_taxid_nucl.dmp') 
+	#gi_taxid_prot_dmp = db('$BLASTDB/gi_taxid_prot.dmp')
 	blastdb = db(blastdb_in)
 	#nr = db('$BLASTDB/nr', 'p')
 
