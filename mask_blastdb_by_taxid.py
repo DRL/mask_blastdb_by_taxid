@@ -9,16 +9,14 @@ Version : 0.1
 
 import os, argparse, subprocess
 
-class db(object):
+class blastdb(object):
 	def __init__(self, filename):
 		self.filename = filename
-		self.type =
 		if (self.is_blastdb()):
-			self.type
-			print "Database " + self.filename + " has been found" 
+			if self.get_dbtype():
+				print "Database " + self.filename + " is of type " + self.get_dbtype() 
 		else:
 			print "Database " + self.filename + " can't be found" 
-
 
 	def is_blastdb(self):
 		try:
@@ -33,26 +31,26 @@ class db(object):
 		except:
 			pass
 
+	def get_dbtype(self):
+		try:
+			'''Return type based on file extension... could probably be improved'''
+			if os.path.isfile(self.filename + '.psq'):
+				return 'prot'
+			elif os.path.isfile(self.filename + '.nin'):
+				return 'nucl'
+		except:
+			return False
 
-#return os.path.isfile(self.filename)
+	def get_gi_taxid_dmp_path(self):
+		gi_taxid_dmp_paths={'nucl' : os.path.abspath(os.path.dirname(self.filename)) + '/gi_taxid_nucl.dmp', 'prot' : os.path.abspath(os.path.dirname(self.filename)) + '/gi_taxid_prot.dmp'}
+		try:
+			if os.path.isfile(gi_taxid_dmp_paths[self.type]):
+				return gi_taxid_dmp_paths[self.type]
+			else:
+				print gi_taxid_dmp_paths[self.type] + " was not found" 
+		except:
+			return False
 
-#class blastdb(db):
-#	def get_file(self):
-#		if self.type = 'n'
-#			return 
-
-#def choose_taxid_dmp(blastdb_type):
-#	if (blastdb_type == 'p'):
-	# 	db
-	# 	try:
-
-	# 		gi_taxid_nucl_dmp = '$BLASTDB/gi_taxid_nucl.dmp' 
-	# 	except IOError as ex:
-	# 		print "File $BLASTDB/gi_taxid_nucl.dmp could not be found" 
-	# 	gi_taxid_dmp = gi_taxid_prot_dmp
-	# else:
-	# 	gi_taxid_dmp = gi_taxid_nucl_dmp
-	# return gi_taxid_dmp
 
 if __name__ == "__main__":
 
@@ -64,19 +62,14 @@ if __name__ == "__main__":
 		prog='mask_blastdb_by_taxid',
 		usage = '%(prog)s -db -type -taxid [-merge] [-h]',
 		add_help=True)
-	parser.add_argument('-db', metavar = 'db_path', help='blastdb input')
+	parser.add_argument('-db', metavar = 'db_path', help='path of blastdb input')
 	parser.add_argument('-out', metavar = 'blastdb_out', help='blastdb output prefix')
 	parser.add_argument('-taxids', metavar = 'taxids' , default=[], type = int, nargs='+', help='TaxIDs for which BLASTdbs should be generated') 
 	parser.add_argument('-merge', action='store_true' , help='Set flag for merging ') 
 
 	args = parser.parse_args()
 
-	db_path, taxids, merge_flag, out_prefix = args.db, args.taxids, args.merge, args.out
+	blastdb_path, taxids, merge_flag, out_prefix = args.db, args.taxids, args.merge, args.out
 
-	#gi_taxid_nucl_dmp = db('$BLASTDB/gi_taxid_nucl.dmp') 
-	#gi_taxid_prot_dmp = db('$BLASTDB/gi_taxid_prot.dmp')
-	blastdb = db(db_path)
-	#nr = db('$BLASTDB/nr', 'p')
-
-	#gi_taxid_dmp = choose_taxid_dmp(blastdb_type) 
-	#print gi_taxid_dmp
+	db = blastdb(blastdb_path)
+	db.get_gi_taxid_dmp_path()
