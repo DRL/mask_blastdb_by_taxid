@@ -46,7 +46,7 @@ class blastdb(object):
 	def get_gi_taxid_dmp_path(self):
 		'''Returns path of gi_taxid_dmp file of the same type as blastdb ('nucl' or 'prot')'''
 		gi_taxid_dmp_paths={'nucl' : os.path.dirname(self.filename) + '/gi_taxid_nucl.dmp', 'prot' : os.path.dirname(self.filename) + '/gi_taxid_prot.dmp'}
-		
+		print gi_taxid_dmp_paths[self.type]
 		if os.path.isfile(gi_taxid_dmp_paths[self.type]):
 			return gi_taxid_dmp_paths[self.type]
 		else:
