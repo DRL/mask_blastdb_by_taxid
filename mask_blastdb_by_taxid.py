@@ -36,9 +36,9 @@ class blastdb(object):
 	def get_dbtype(self):
 		'''Returns type based on file extension... could probably be improved'''
 		try:
-			if os.path.isfile(self.filename + '.psq'):
+			if os.path.isfile(self.filename + '.pal'):
 				return 'prot'
-			elif os.path.isfile(self.filename + '.nin'):
+			elif os.path.isfile(self.filename + '.nal'):
 				return 'nucl'
 		except:
 			return False
@@ -48,10 +48,7 @@ class blastdb(object):
 		gi_taxid_dmp_paths={'nucl' : os.path.dirname(self.filename) + '/gi_taxid_nucl.dmp', 'prot' : os.path.dirname(self.filename) + '/gi_taxid_prot.dmp'}
 		
 		try:
-			if os.path.isfile(gi_taxid_dmp_paths[self.type]):
-				return gi_taxid_dmp_paths[self.type]
-			else:
-				print gi_taxid_dmp_paths[self.type] + " was not found" 
+			return gi_taxid_dmp_paths[self.type]
 		except:
 			print gi_taxid_dmp_paths[self.type] + " was not found" 
 
@@ -133,6 +130,8 @@ if __name__ == "__main__":
 	parser.add_argument('-merge', action='store_true' , help='Set flag for merging ') 
 
 	args = parser.parse_args()
+
+
 
 	blastdb_path, taxids, merge_flag, out_suffix = os.path.abspath(args.db), args.taxids, args.merge, args.out
 
