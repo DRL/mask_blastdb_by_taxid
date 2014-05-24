@@ -7,20 +7,22 @@ Author  : Dominik R. Laetsch, dominik.laetsch at gmail dot com
 Version : 0.1
 """
 
-import os, argparse, subprocess
+import os, argparse, subprocess, re
 
 class blastdb(object):
 	def __init__(self, filename):
 		self.filename = filename
+		self.type = ''
 		if (self.is_blastdb()):
-			if self.get_dbtype():
+			if (self.get_dbtype()):
+				self.type = self.get_dbtype() 
 				print "Database " + self.filename + " is of type " + self.get_dbtype() 
 		else:
 			print "Database " + self.filename + " can't be found" 
 
 	def is_blastdb(self):
+		'''Returns true if system call blastdbcmd -info returns a meaningful result''' 
 		try:
-			'''Runs a system call of blastdbcmd -info on the database to see whether db_path points to a blast_db''' 
 			#call(["module load blast"]) # for bigfoot
 			out = subprocess.check_output("blastdbcmd -db " + self.filename + " -info", stderr=subprocess.STDOUT, shell=True)
 			#call(["module unload blast"]) # for bigfoot
@@ -32,8 +34,8 @@ class blastdb(object):
 			pass
 
 	def get_dbtype(self):
+		'''Returns type based on file extension... could probably be improved'''
 		try:
-			'''Return type based on file extension... could probably be improved'''
 			if os.path.isfile(self.filename + '.psq'):
 				return 'prot'
 			elif os.path.isfile(self.filename + '.nin'):
@@ -42,7 +44,9 @@ class blastdb(object):
 			return False
 
 	def get_gi_taxid_dmp_path(self):
+		'''Returns path of gi_taxid_dmp file of the same type as blastdb ('nucl' or 'prot')'''
 		gi_taxid_dmp_paths={'nucl' : os.path.dirname(self.filename) + '/gi_taxid_nucl.dmp', 'prot' : os.path.dirname(self.filename) + '/gi_taxid_prot.dmp'}
+		
 		try:
 			if os.path.isfile(gi_taxid_dmp_paths[self.type]):
 				return gi_taxid_dmp_paths[self.type]
@@ -50,6 +54,48 @@ class blastdb(object):
 				print gi_taxid_dmp_paths[self.type] + " was not found" 
 		except:
 			print gi_taxid_dmp_paths[self.type] + " was not found" 
+
+def parse_gi_taxid_dmp_for_taxids(gi_taxid_dmp):
+	gi_taxid_dmp_format = r'^\d+\t\d+\n$'
+	line_number = 0
+	current_gi, current_taxid = 0, 0
+	gis_of_taxid = {}
+
+	print "Parsing " + gi_taxid_dmp + " for " + str(taxid_dict.keys()) + " ..."
+	with open(gi_taxid_dmp) as fh:
+		for line in fh:
+			line_number += 1
+			if re.search(gi_taxid_dmp_format, line):
+				current_gi, current_taxid = line.rstrip("\n").split("\t")
+				current_gi, current_taxid = int(current_gi), int(current_taxid)
+				if current_taxid in taxid_dict:
+					taxid_dict[current_taxid] += 1
+					if current_taxid in gis_of_taxid:
+						gis_of_taxid[current_taxid].append(current_gi)
+					else:
+						gis_of_taxid[current_taxid] = [current_gi]
+			else:
+				print "line "+ str(line_number) + " : [\"" + line.rstrip("\n") + "\"] looks bad"
+				break
+	fh.close()
+	for taxid in sorted(taxid_dict):
+		print str(taxid) + "\t: " + str(taxid_dict[taxid])
+	return gis_of_taxid
+
+def output_gis(db, gis_of_taxid, out_suffix, merge_flag):
+	taxid_string = ''
+	gi_string = ''
+	if (merge_flag):
+		for taxid in gis_of_taxid:
+			taxid_string += str(taxid) + "."
+		output_filename = db.filename + "." + db.type + ".filtered." + taxid_string + "txt"   
+		output_file = open(output_filename, "w")
+		for taxid in sorted(gis_of_taxid):
+			for gi in gis_of_taxid[taxid]:
+				output_file.write(str(gi)+"\n")
+	#else:
+	#	for taxid in gis_of_taxid:
+	#		taxid_string += str(taxid) + "."
 
 if __name__ == "__main__":
 
@@ -62,14 +108,22 @@ if __name__ == "__main__":
 		usage = '%(prog)s -db -type -taxid [-merge] [-h]',
 		add_help=True)
 	parser.add_argument('-db', metavar = 'db_path', help='path of blastdb input')
-	parser.add_argument('-out', metavar = 'blastdb_out', help='blastdb output prefix')
+	parser.add_argument('-out', metavar = 'blastdb_out', default='', type = str,  help='blastdb output suffix')
 	parser.add_argument('-taxids', metavar = 'taxids' , default=[], type = int, nargs='+', help='TaxIDs for which BLASTdbs should be generated') 
 	parser.add_argument('-merge', action='store_true' , help='Set flag for merging ') 
 
 	args = parser.parse_args()
 
-	blastdb_path, taxids, merge_flag, out_prefix = os.path.abspath(args.db), args.taxids, args.merge, args.out
+	blastdb_path, taxids, merge_flag, out_suffix = os.path.abspath(args.db), args.taxids, args.merge, args.out
+
+	taxid_dict = {}
+	for taxid in taxids:
+		taxid_dict[taxid] = 0
 
 	db = blastdb(blastdb_path)
 	
-	#gi_taxid_dmp = db.get_gi_taxid_dmp_path()
+	gi_taxid_dmp = db.get_gi_taxid_dmp_path()
+
+	gis_of_taxid = parse_gi_taxid_dmp_for_taxids(gi_taxid_dmp)  
+	
+	output_gis(db, gis_of_taxid, out_suffix, merge_flag)
