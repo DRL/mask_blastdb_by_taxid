@@ -107,7 +107,7 @@ def make_alias_blastdbs(db, gi_filenames):
 	for gi_filename in gi_filenames:
 		#print "blastdb_aliastool -gilist " + gi_filename + " -db " + db.filename + " -dbtype " + db.type + " -out " + gi_filename + "db"
 		subprocess.call("blastdb_aliastool -gilist " + gi_filename + " -db " + db.filename + " -dbtype " + db.type + " -out " + gi_filename + ".aliasdb", shell=True)
-	
+		print "Alias BLASTdb written to " + gi_filename + ".aliasdb"
 
 if __name__ == "__main__":
 
