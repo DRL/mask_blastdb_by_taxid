@@ -96,7 +96,7 @@ def output_gis(db, gis_of_taxid, out_suffix, merge_flag):
 			taxid_string = str(taxid)
 			output_filename = db.filename + "." + db.type + ".filtered." + taxid_string
 			gi_filenames.append(output_filename)
-			output_file = open(output_filename + "txt", "w")
+			output_file = open(output_filename + ".txt", "w")
 			for gi in gis_of_taxid[taxid]:
 				output_file.write(str(gi)+"\n")	 
 		output_file.close()
@@ -142,9 +142,9 @@ if __name__ == "__main__":
 	
 	gi_taxid_dmp = db.get_gi_taxid_dmp_path()
 
-	gis_of_taxid = parse_gi_taxid_dmp_for_taxids(gi_taxid_dmp)  
+	#gis_of_taxid = parse_gi_taxid_dmp_for_taxids(gi_taxid_dmp)  
 	
-	gi_filenames = output_gis(db, gis_of_taxid, out_suffix, merge_flag)
-
+	#gi_filenames = output_gis(db, gis_of_taxid, out_suffix, merge_flag)
+	gi_filenames = ['/exports/blast_db/nt.nucl.filtered.36090txt']
 	alias_blastdbs = make_alias_blastdbs(db, gi_filenames)   
 
