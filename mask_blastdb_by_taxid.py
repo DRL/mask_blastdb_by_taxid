@@ -107,7 +107,7 @@ def make_alias_blastdbs(db, gi_filenames):
 	for filename in gi_filenames:
 		try:
 			#call(["module load blast"]) # for bigfoot
-			subprocess.check_output("blastdb_aliastool -gilist " + gi_filename + " -db " + db.filename + " -out " + gi_filename + "db", stderr=subprocess.STDOUT, shell=True)
+			subprocess.check_output("blastdb_aliastool -gilist " + gi_filename + " -db " + db.filename + " -out " + gi_filename + "db", shell=True)
 			#call(["module unload blast"]) # for bigfoot
 		except:
 			pass
