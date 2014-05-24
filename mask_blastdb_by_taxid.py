@@ -105,8 +105,8 @@ def output_gis(db, gis_of_taxid, out_suffix, merge_flag):
 def make_alias_blastdbs(db, gi_filenames):
 	'''Makes alias blastdbs of db based on gi lists in output_filenames and returns the paths for the alias blastdbs''' 
 	for gi_filename in gi_filenames:
-		print "blastdb_aliastool -gilist " + gi_filename + " -db " + db.filename + " -dbtype " + db.type + " -out " + gi_filename + "db"
-		#subprocess.call("blastdb_aliastool -gilist " + gi_filename + " -db " + db.filename + "-dbtype " + db.type + " -out " + gi_filename + "db", shell=True)
+		#print "blastdb_aliastool -gilist " + gi_filename + " -db " + db.filename + " -dbtype " + db.type + " -out " + gi_filename + "db"
+		subprocess.call("blastdb_aliastool -gilist " + gi_filename + " -db " + db.filename + " -dbtype " + db.type + " -out " + gi_filename + "db", shell=True)
 		#try:
 			#call(["module load blast"]) # for bigfoot
 			
