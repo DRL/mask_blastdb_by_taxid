@@ -24,9 +24,9 @@ class blastdb(object):
 		'''Returns true if system call blastdbcmd -info returns a meaningful result''' 
 		try:
 			#call(["module load blast"]) # for bigfoot
-			out = subprocess.check_output("blastdbcmd -db " + self.filename + " -info", stderr=subprocess.STDOUT, shell=True)
+			blastdbcmd_output = subprocess.check_output("blastdbcmd -db " + self.filename + " -info", stderr=subprocess.STDOUT, shell=True)
 			#call(["module unload blast"]) # for bigfoot
-			if out.startswith('Database:'):
+			if blastdbcmd_output.startswith('Database:'):
 				return True
 			else:
 				return False
@@ -85,17 +85,37 @@ def parse_gi_taxid_dmp_for_taxids(gi_taxid_dmp):
 def output_gis(db, gis_of_taxid, out_suffix, merge_flag):
 	taxid_string = ''
 	gi_string = ''
+	gi_filenames = []
 	if (merge_flag):
-		for taxid in gis_of_taxid:
+		for taxid in sorted(gis_of_taxid):
 			taxid_string += str(taxid) + "."
-		output_filename = db.filename + "." + db.type + ".filtered." + taxid_string + "txt"   
-		output_file = open(output_filename, "w")
+		output_filename = db.filename + "." + db.type + ".filtered." + taxid_string + "txt"
+		gi_filenames.append(output_filename)
+		output_file = open(output_filename + "txt" , "w")
 		for taxid in sorted(gis_of_taxid):
 			for gi in gis_of_taxid[taxid]:
 				output_file.write(str(gi)+"\n")
-	#else:
-	#	for taxid in gis_of_taxid:
-	#		taxid_string += str(taxid) + "."
+		output_file.close()
+	else:
+		for taxid in gis_of_taxid:
+			taxid_string = str(taxid)
+			output_filename = db.filename + "." + db.type + ".filtered." + taxid_string
+			gi_filenames.append(output_filename)
+			output_file = open(output_filename + "txt", "w")
+			for gi in gis_of_taxid[taxid]:
+				output_file.write(str(gi)+"\n")	 
+		output_file.close()
+	return gi_filenames
+	
+def make_alias_blastdbs(db, gi_filenames):
+	'''Makes alias blastdbs of db based on gi lists in output_filenames and returns the paths for the alias blastdbs''' 
+	for filename in gi_filenames:
+		try:
+			#call(["module load blast"]) # for bigfoot
+			subprocess.check_output("blastdb_aliastool -gilist " + gi_filename + " -db " + db.filename + " -out " + gi_filename + "db", stderr=subprocess.STDOUT, shell=True)
+			#call(["module unload blast"]) # for bigfoot
+		except:
+			pass
 
 if __name__ == "__main__":
 
@@ -117,6 +137,7 @@ if __name__ == "__main__":
 	blastdb_path, taxids, merge_flag, out_suffix = os.path.abspath(args.db), args.taxids, args.merge, args.out
 
 	taxid_dict = {}
+	
 	for taxid in taxids:
 		taxid_dict[taxid] = 0
 
@@ -126,4 +147,7 @@ if __name__ == "__main__":
 
 	gis_of_taxid = parse_gi_taxid_dmp_for_taxids(gi_taxid_dmp)  
 	
-	output_gis(db, gis_of_taxid, out_suffix, merge_flag)
+	gi_filenames = output_gis(db, gis_of_taxid, out_suffix, merge_flag)
+
+	alias_blastdbs = make_alias_blastdbs(db, gi_filenames)   
+
