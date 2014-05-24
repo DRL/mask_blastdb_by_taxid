@@ -106,13 +106,8 @@ def make_alias_blastdbs(db, gi_filenames):
 	'''Makes alias blastdbs of db based on gi lists in output_filenames and returns the paths for the alias blastdbs''' 
 	for gi_filename in gi_filenames:
 		#print "blastdb_aliastool -gilist " + gi_filename + " -db " + db.filename + " -dbtype " + db.type + " -out " + gi_filename + "db"
-		subprocess.call("blastdb_aliastool -gilist " + gi_filename + " -db " + db.filename + " -dbtype " + db.type + " -out " + gi_filename + "db", shell=True)
-		#try:
-			#call(["module load blast"]) # for bigfoot
-			
-			#call(["module unload blast"]) # for bigfoot
-		#except:
-		#	pass
+		subprocess.call("blastdb_aliastool -gilist " + gi_filename + " -db " + db.filename + " -dbtype " + db.type + " -out " + gi_filename + ".aliasdb", shell=True)
+	
 
 if __name__ == "__main__":
 
@@ -144,9 +139,9 @@ if __name__ == "__main__":
 	
 	gi_taxid_dmp = db.get_gi_taxid_dmp_path()
 
-	#gis_of_taxid = parse_gi_taxid_dmp_for_taxids(gi_taxid_dmp)  
+	gis_of_taxid = parse_gi_taxid_dmp_for_taxids(gi_taxid_dmp)  
 	
-	#gi_filenames = output_gis(db, gis_of_taxid, out_suffix, merge_flag)
-	gi_filenames = ['/exports/blast_db/nt.nucl.filtered.36090.100.txt']
+	gi_filenames = output_gis(db, gis_of_taxid, out_suffix, merge_flag)
+	
 	alias_blastdbs = make_alias_blastdbs(db, gi_filenames)   
 
