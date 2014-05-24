@@ -23,9 +23,9 @@ class blastdb(object):
 	def is_blastdb(self):
 		'''Returns true if system call blastdbcmd -info returns a meaningful result''' 
 		try:
-			#call(["module load blast"]) # for bigfoot
+			call(["module load blast"]) # for bigfoot
 			blastdbcmd_output = subprocess.check_output("blastdbcmd -db " + self.filename + " -info", stderr=subprocess.STDOUT, shell=True)
-			#call(["module unload blast"]) # for bigfoot
+			call(["module unload blast"]) # for bigfoot
 			if blastdbcmd_output.startswith('Database:'):
 				return True
 			else:
@@ -108,9 +108,9 @@ def make_alias_blastdbs(db, gi_filenames):
 	'''Makes alias blastdbs of db based on gi lists in output_filenames and returns the paths for the alias blastdbs''' 
 	for filename in gi_filenames:
 		try:
-			#call(["module load blast"]) # for bigfoot
+			call(["module load blast"]) # for bigfoot
 			subprocess.check_output("blastdb_aliastool -gilist " + gi_filename + " -db " + db.filename + " -out " + gi_filename + "db", stderr=subprocess.STDOUT, shell=True)
-			#call(["module unload blast"]) # for bigfoot
+			call(["module unload blast"]) # for bigfoot
 		except:
 			pass
 
