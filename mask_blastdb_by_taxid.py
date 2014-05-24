@@ -146,6 +146,6 @@ if __name__ == "__main__":
 	#gis_of_taxid = parse_gi_taxid_dmp_for_taxids(gi_taxid_dmp)  
 	
 	#gi_filenames = output_gis(db, gis_of_taxid, out_suffix, merge_flag)
-	gi_filenames = ['/exports/blast_db/nt.nucl.filtered.36090txt']
+	gi_filenames = ['/exports/blast_db/nt.nucl.filtered.36090.100.txt']
 	alias_blastdbs = make_alias_blastdbs(db, gi_filenames)   
 
