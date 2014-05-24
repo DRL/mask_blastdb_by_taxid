@@ -47,10 +47,10 @@ class blastdb(object):
 		'''Returns path of gi_taxid_dmp file of the same type as blastdb ('nucl' or 'prot')'''
 		gi_taxid_dmp_paths={'nucl' : os.path.dirname(self.filename) + '/gi_taxid_nucl.dmp', 'prot' : os.path.dirname(self.filename) + '/gi_taxid_prot.dmp'}
 		
-		try:
+		if os.path.isfile(gi_taxid_dmp_paths[self.type]):
 			return gi_taxid_dmp_paths[self.type]
-		except:
-			print os.path.dirname(self.filename) + " was not found" 
+		else:
+			print gi_taxid_dmp_paths[self.type] + " was not found" 
 
 def parse_gi_taxid_dmp_for_taxids(gi_taxid_dmp):
 	gi_taxid_dmp_format = r'^\d+\t\d+\n$'
