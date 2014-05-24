@@ -17,8 +17,8 @@ class blastdb(object):
 			if (self.get_dbtype()):
 				self.type = self.get_dbtype() 
 				print "Database " + self.filename + " is of type " + self.get_dbtype() 
-		else:
-			print "Database " + self.filename + " can't be found" 
+			else:
+				print "Database " + self.filename + " is not a BLAST db"
 
 	def is_blastdb(self):
 		'''Returns true if system call blastdbcmd -info returns a meaningful result''' 
@@ -31,7 +31,7 @@ class blastdb(object):
 			else:
 				return False
 		except:
-			pass
+			print "Blast db " + self.filename + " can't be found"
 
 	def get_dbtype(self):
 		'''Returns type based on file extension... could probably be improved'''
