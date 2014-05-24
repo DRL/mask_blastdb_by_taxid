@@ -35,14 +35,11 @@ class blastdb(object):
 
 	def get_dbtype(self):
 		'''Returns type based on file extension... could probably be improved'''
-		try:
-			if os.path.isfile(self.filename + '.pal'):
-				return 'prot'
-			elif os.path.isfile(self.filename + '.nal'):
-				return 'nucl'
-			else: 
-				return False
-		except:
+		if os.path.isfile(self.filename + '.pal'):
+			return 'prot'
+		elif os.path.isfile(self.filename + '.nal'):
+			return 'nucl'
+		else: 
 			return False
 
 	def get_gi_taxid_dmp_path(self):
