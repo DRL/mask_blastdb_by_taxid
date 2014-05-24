@@ -50,7 +50,7 @@ class blastdb(object):
 		try:
 			return gi_taxid_dmp_paths[self.type]
 		except:
-			print gi_taxid_dmp_paths[self.type] + " was not found" 
+			print os.path.dirname(self.filename) + " was not found" 
 
 def parse_gi_taxid_dmp_for_taxids(gi_taxid_dmp):
 	gi_taxid_dmp_format = r'^\d+\t\d+\n$'
